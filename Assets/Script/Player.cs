@@ -1,30 +1,23 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     [SerializeField]
-    float jumpSpeed = 10F;
+    Rigidbody2D player;
     [SerializeField]
-    Rigidbody2D body;
+    TextMeshPro textMesh;
     [SerializeField]
-    SpriteRenderer sr;
-
-    [SerializeField]
-    string currentColor;
-
-    [SerializeField]
-    Color colorCyan;
-    [SerializeField]
-    Color colorPurple;
-    [SerializeField]
-    Color colorYellow;
-    [SerializeField]
-    Color colorMagento;
-
-    private void Start()
+    SpriteRenderer eat;
+    // Start is called before the first frame update
+    void Start()
     {
-        SetRandomColor();
+
     }
 
     // Update is called once per frame
@@ -32,49 +25,23 @@ public class Player : MonoBehaviour
     {
         if (Input.GetButtonDown("Jump"))
         {
-            body.velocity = Vector2.up * jumpSpeed;
+            player.velocity = Vector2.up * 5f;
+        }
+        if (transform.position.y < -10f)
+        {
+            textMesh.text = "Game Over";
         }
     }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag != currentColor)
-            Debug.Log("Game Over!");
-
-        if (collision.tag == "EatYellow")
+        Debug.Log(collision.gameObject.tag);
+        textMesh.text = collision.gameObject.tag;
+        if (collision.gameObject.tag == "Eat")
         {
-            SetColor(2);
+            Debug.Log("Da An");
+            SpriteRenderer spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+            spriteRenderer.color = eat.color;
             Destroy(collision.gameObject);
         }
-        Debug.Log(collision.tag);
-    }
-
-    private void SetColor(int index)
-    {
-        switch (index)
-        {
-            case 0:
-                currentColor = "Cyan";
-                sr.color = colorCyan;
-                break;
-            case 1:
-                currentColor = "Purple";
-                sr.color = colorPurple;
-                break;
-            case 2:
-                currentColor = "Yellow";
-                sr.color = colorYellow;
-                break;
-            case 3:
-                currentColor = "Magento";
-                sr.color = colorMagento;
-                break;
-        }
-    }
-
-    private void SetRandomColor()
-    {
-        int index = UnityEngine.Random.Range(0, 3);
-        SetColor(index);
     }
 }
